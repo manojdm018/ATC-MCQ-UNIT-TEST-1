@@ -34,9 +34,7 @@ const questions = [
 const state = {
   index: 0,
   score: 0,
-  answered: false,
-  userAnswers: [],
-  optionOrders: []
+  answered: false
 };
 
 const el = {

@@ -78,15 +78,25 @@ function startQuiz() {
   loadQuestion();
 }
 
+function shuffleOptions(options) {
+  const shuffled = [...options];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 function loadQuestion() {
   const current = questions[state.index];
+  const shuffledOptions = shuffleOptions(current.options);
   state.answered = false;
   el.nextBtn.disabled = true;
   el.questionCounter.textContent = `Question ${state.index + 1} / ${questions.length}`;
   el.questionText.textContent = current.q;
   el.optionsContainer.innerHTML = "";
 
-  current.options.forEach((option) => {
+  shuffledOptions.forEach((option) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "option-btn";

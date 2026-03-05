@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automata Theory MCQ Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="quiz-card" aria-live="polite">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-icon">⚡</span>
+          <h1>ATC MCQ Challenge</h1>
+        </div>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
+          <span class="sun">☀️</span>
+          <span class="moon">🌙</span>
+        </button>
+      </header>
+
+      <div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <section id="startScreen" class="panel active">
+        <p class="badge">30 Questions • Automata Theory</p>
+        <h2>Ready to Level Up?</h2>
+        <p class="subtitle">Test your concepts with a fast, juicy quiz experience.</p>
+        <ul class="feature-list">
+          <li>🎯 Instant right/wrong feedback</li>
+          <li>📈 Animated progress tracking</li>
+          <li>🌗 Smooth dark mode</li>
+        </ul>
+        <button id="startBtn" class="btn btn-primary" type="button">Start Quiz</button>
+      </section>
+
+      <section id="quizScreen" class="panel" hidden>
+        <div class="meta-row">
+          <p id="questionCounter" class="counter">Question 1 / 30</p>
+          <p id="scorePill" class="score-pill">Score: 0</p>
+        </div>
+        <h2 id="questionText" class="question"></h2>
+        <div id="optionsContainer" class="options"></div>
+        <div class="controls">
+          <button id="prevBtn" class="btn btn-secondary" type="button" disabled>Previous</button>
+          <button id="nextBtn" class="btn btn-secondary" type="button" disabled>Next</button>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="panel" hidden>
+        <p class="badge">Quiz Complete</p>
+        <h2 id="resultTitle">Great Run!</h2>
+        <p id="finalScore" class="final-score"></p>
+        <p id="resultMessage" class="subtitle"></p>
+        <button id="restartBtn" class="btn btn-primary" type="button">Play Again</button>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

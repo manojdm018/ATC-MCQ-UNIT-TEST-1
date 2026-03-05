@@ -46,6 +46,7 @@ const el = {
   scorePill: document.getElementById("scorePill"),
   questionText: document.getElementById("questionText"),
   optionsContainer: document.getElementById("optionsContainer"),
+  prevBtn: document.getElementById("prevBtn"),
   nextBtn: document.getElementById("nextBtn"),
   finalScore: document.getElementById("finalScore"),
   resultMessage: document.getElementById("resultMessage"),
@@ -72,6 +73,8 @@ function startQuiz() {
   state.index = 0;
   state.score = 0;
   state.answered = false;
+  state.userAnswers = Array(questions.length).fill(null);
+  state.optionOrders = questions.map((question) => shuffleOptions(question.options));
   el.scorePill.textContent = `Score: ${state.score}`;
   updateProgress();
   togglePanel(el.quizScreen);
@@ -89,36 +92,42 @@ function shuffleOptions(options) {
 
 function loadQuestion() {
   const current = questions[state.index];
-  const shuffledOptions = shuffleOptions(current.options);
-  state.answered = false;
-  el.nextBtn.disabled = true;
+  const optionOrder = state.optionOrders[state.index];
+  state.answered = state.userAnswers[state.index] !== null;
   el.questionCounter.textContent = `Question ${state.index + 1} / ${questions.length}`;
   el.questionText.textContent = current.q;
   el.optionsContainer.innerHTML = "";
 
-  shuffledOptions.forEach((option) => {
+  optionOrder.forEach((option) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "option-btn";
     btn.textContent = option;
-    btn.addEventListener("click", () => checkAnswer(btn, option));
+    btn.addEventListener("click", () => checkAnswer(option));
     el.optionsContainer.appendChild(btn);
   });
+
+  const answerAtIndex = state.userAnswers[state.index];
+  if (answerAtIndex !== null) {
+    lockAnswerView(answerAtIndex);
+  } else {
+    el.nextBtn.disabled = true;
+  }
+
+  el.prevBtn.disabled = state.index === 0;
+  updateProgress();
 }
 
-function checkAnswer(button, selectedAnswer) {
-  if (state.answered) return;
-  state.answered = true;
 
+function lockAnswerView(selectedAnswer) {
   const current = questions[state.index];
-  const isCorrect = selectedAnswer === current.answer;
   const allButtons = [...el.optionsContainer.querySelectorAll(".option-btn")];
+  const selectedButton = allButtons.find((btn) => btn.textContent === selectedAnswer);
 
-  if (isCorrect) {
-    state.score += 1;
-    button.classList.add("correct");
+  if (selectedAnswer === current.answer) {
+    if (selectedButton) selectedButton.classList.add("correct");
   } else {
-    button.classList.add("wrong");
+    if (selectedButton) selectedButton.classList.add("wrong");
     const correctButton = allButtons.find((btn) => btn.textContent === current.answer);
     if (correctButton) correctButton.classList.add("reveal");
   }
@@ -127,19 +136,39 @@ function checkAnswer(button, selectedAnswer) {
     btn.disabled = true;
   });
 
-  el.scorePill.textContent = `Score: ${state.score}`;
   el.nextBtn.disabled = false;
+}
+
+function checkAnswer(selectedAnswer) {
+  if (state.answered) return;
+  state.answered = true;
+
+  const current = questions[state.index];
+  const isCorrect = selectedAnswer === current.answer;
+  state.userAnswers[state.index] = selectedAnswer;
+
+  if (isCorrect) {
+    state.score += 1;
+  }
+
+  lockAnswerView(selectedAnswer);
+  el.scorePill.textContent = `Score: ${state.score}`;
 }
 
 function nextQuestion() {
   state.index += 1;
-  updateProgress();
 
   if (state.index < questions.length) {
     loadQuestion();
   } else {
     showResult();
   }
+}
+
+function previousQuestion() {
+  if (state.index === 0) return;
+  state.index -= 1;
+  loadQuestion();
 }
 
 function showResult() {
@@ -173,6 +202,7 @@ function toggleTheme() {
 }
 
 el.startBtn.addEventListener("click", startQuiz);
+el.prevBtn.addEventListener("click", previousQuestion);
 el.nextBtn.addEventListener("click", nextQuestion);
 el.restartBtn.addEventListener("click", startQuiz);
 el.themeToggle.addEventListener("click", toggleTheme);
